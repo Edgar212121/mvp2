@@ -134,8 +134,7 @@ const UploadPage = ({
           {/* Debug info in development */}
           {process.env.NODE_ENV === 'development' && (
             <div className="mb-4 p-3 bg-gray-100 rounded text-xs">
-              <p>Verifications in state: {verificationsList?.length || 0}</p>
-              <p>System ready: {systemReady ? 'Yes' : 'No'}</p>
+                  <p>System ready: {systemReady ? 'Yes' : 'No'}</p>
             </div>
           )}
 
@@ -156,21 +155,29 @@ const UploadPage = ({
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Include country code (e.g., +34 612345678)"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Please include your country code at the beginning
-              </p>
-            </div>
+          <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Phone Number <span className="text-red-500">*</span>
+  </label>
+  <input
+    type="tel"
+    value={formData.phoneNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+      const regex = /^\+?\d{0,15}$/;
+      if (regex.test(value)) {
+        setFormData(prev => ({ ...prev, phoneNumber: value }));
+      }
+    }}
+    maxLength={16}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="Include country code (e.g., +34 612345678)"
+  />
+  <p className="text-xs text-gray-500 mt-1">
+    Please include your country code at the beginning
+  </p>
+</div>
+
           </div>
 
           {/* Document Type Selection */}

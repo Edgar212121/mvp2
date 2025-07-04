@@ -1,6 +1,6 @@
 // src/components/AdminDashboard.js
 import React, { useState, useEffect } from 'react';
-import { Shield, FileText, Clock, CheckCircle, XCircle, Building, RefreshCw } from 'lucide-react';
+import { Shield, FileText, Clock, CheckCircle, XCircle, Building, RefreshCw, Eye, X, Phone, User, FileImage, Camera } from 'lucide-react';
 
 const AdminDashboard = ({
   verificationsList,
@@ -13,6 +13,8 @@ const AdminDashboard = ({
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // Para el modal de detalles
+  const [showUserModal, setShowUserModal] = useState(false);
   
   // Auto-refresh cada 3 segundos si está activado
   useEffect(() => {
@@ -23,7 +25,7 @@ const AdminDashboard = ({
     }, 3000);
     
     return () => clearInterval(interval);
-  }, [autoRefresh, verificationsList.length]); // Agregar verificationsList.length como dependencia
+  }, [autoRefresh, verificationsList.length]);
   
   // Listen for custom events
   useEffect(() => {
@@ -76,6 +78,18 @@ const AdminDashboard = ({
       if (!silent) setIsRefreshing(false);
     }
   };
+
+  // Abrir modal con detalles del usuario
+  const openUserDetails = (verification) => {
+    setSelectedUser(verification);
+    setShowUserModal(true);
+  };
+
+  // Cerrar modal
+  const closeUserModal = () => {
+    setShowUserModal(false);
+    setSelectedUser(null);
+  };
   
   // Filter verifications
   const filteredVerifications = verificationsList.filter(v => {
@@ -127,6 +141,12 @@ const AdminDashboard = ({
       console.error('❌ Error saving status update:', error);
     }
     
+    // Update selected user if modal is open
+    if (selectedUser && selectedUser.id === id) {
+      const updatedUser = updatedList.find(v => v.id === id);
+      setSelectedUser(updatedUser);
+    }
+    
     // Show alert
     alert(`Verification ${newStatus} successfully${reason ? '. Reason: ' + reason : ''}`);
   };
@@ -134,6 +154,240 @@ const AdminDashboard = ({
   // Logout
   const handleLogout = () => {
     window.location.href = '/';
+  };
+
+  // Modal de detalles del usuario
+  const UserDetailsModal = () => {
+    if (!showUserModal || !selectedUser) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
+          {/* Header del modal */}
+          <div className="flex justify-between items-center p-6 border-b">
+            <h3 className="text-xl font-bold text-gray-900">User Details - {selectedUser.nombre}</h3>
+            <button
+              onClick={closeUserModal}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Contenido del modal */}
+          <div className="p-6">
+            {/* Información personal */}
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <User className="h-5 w-5 mr-2" />
+                Personal Information
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                <div>
+                  <span className="font-medium text-gray-700">Name:</span>
+                  <p className="text-gray-900">{selectedUser.nombre}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 flex items-center">
+                    <Phone className="h-4 w-4 mr-1" />
+                    Phone:
+                  </span>
+                  <p className="text-gray-900">{selectedUser.telefono || 'Not provided'}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Document Type:</span>
+                  <p className="text-gray-900 capitalize">{selectedUser.tipoDocumento || 'Not specified'}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Submission Date:</span>
+                  <p className="text-gray-900">{new Date(selectedUser.fecha).toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Estados y confianza */}
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Verification Status</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <span className="font-medium text-gray-700">Pre-Analysis:</span>
+                  <p className={`font-medium ${
+                    selectedUser.estadoInterno === 'approved' ? 'text-green-600' :
+                    selectedUser.estadoInterno === 'rejected' ? 'text-red-600' :
+                    'text-yellow-600'
+                  }`}>
+                    {selectedUser.estadoInterno === 'approved' ? 'Passed' : 
+                     selectedUser.estadoInterno === 'rejected' ? 'Failed' : 'Needs Review'}
+                  </p>
+                  <p className="text-sm text-gray-600">Confidence: {selectedUser.confianza}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <span className="font-medium text-gray-700">Review Status:</span>
+                  <p className={`font-medium ${
+                    selectedUser.estadoRevision === 'Pending Review' ? 'text-yellow-600' :
+                    selectedUser.estadoRevision === 'Approved' ? 'text-green-600' :
+                    selectedUser.estadoRevision === 'Rejected' ? 'text-red-600' :
+                    'text-blue-600'
+                  }`}>
+                    {selectedUser.estadoRevision}
+                  </p>
+                  {selectedUser.fechaRevision && (
+                    <p className="text-sm text-gray-600">
+                      Reviewed: {new Date(selectedUser.fechaRevision).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <span className="font-medium text-gray-700">Client Source:</span>
+                  <p className="font-medium">
+                    {selectedUser.esDeXkard ? (
+                      <span className="text-purple-600">Xkard Integration</span>
+                    ) : (
+                      <span className="text-gray-600">Direct Submission</span>
+                    )}
+                  </p>
+                  <p className="text-sm text-gray-600">Token: {selectedUser.token}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Imágenes de documentos */}
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <FileImage className="h-5 w-5 mr-2" />
+                Document Images
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Imagen frontal del documento */}
+                {selectedUser.imagenDocumentoFrontal && (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h5 className="font-medium text-gray-700 mb-2">
+                      {selectedUser.tipoDocumento === 'passport' ? 'Passport Page' : 'Document Front'}
+                    </h5>
+                    <div className="border rounded-lg overflow-hidden">
+                      <img
+                        src={selectedUser.imagenDocumentoFrontal}
+                        alt="Document Front"
+                        className="w-full h-48 object-contain bg-white"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      <div className="hidden p-4 text-center text-gray-500">
+                        <FileImage className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                        <p>Image not available</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Imagen trasera del documento (solo si no es pasaporte) */}
+                {selectedUser.imagenDocumentoTrasera && selectedUser.tipoDocumento !== 'passport' && (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h5 className="font-medium text-gray-700 mb-2">Document Back</h5>
+                    <div className="border rounded-lg overflow-hidden">
+                      <img
+                        src={selectedUser.imagenDocumentoTrasera}
+                        alt="Document Back"
+                        className="w-full h-48 object-contain bg-white"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      <div className="hidden p-4 text-center text-gray-500">
+                        <FileImage className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                        <p>Image not available</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Selfie */}
+            {selectedUser.imagenSelfie && (
+              <div className="mb-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Camera className="h-5 w-5 mr-2" />
+                  Selfie Photo
+                </h4>
+                <div className="bg-gray-50 p-4 rounded-lg max-w-md">
+                  <div className="border rounded-lg overflow-hidden">
+                    <img
+                      src={selectedUser.imagenSelfie}
+                      alt="User Selfie"
+                      className="w-full h-64 object-contain bg-white"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'block';
+                      }}
+                    />
+                    <div className="hidden p-4 text-center text-gray-500">
+                      <Camera className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                      <p>Selfie not available</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Motivo de rechazo si existe */}
+            {selectedUser.motivoRechazo && (
+              <div className="mb-6">
+                <h4 className="text-lg font-semibold text-red-700 mb-2">Rejection Reason</h4>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-red-800">{selectedUser.motivoRechazo}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Acciones */}
+            {selectedUser.estadoRevision === 'Pending Review' && (
+              <div className="border-t pt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Actions</h4>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      const confirmApprove = window.confirm('Approve this verification?');
+                      if (confirmApprove) {
+                        updateVerificationStatus(selectedUser.id, 'Approved');
+                      }
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => {
+                      const reason = prompt('Rejection reason or missing information:');
+                      if (reason) {
+                        updateVerificationStatus(selectedUser.id, 'Rejected', reason);
+                      }
+                    }}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => {
+                      const info = prompt('What additional information is needed?');
+                      if (info) {
+                        updateVerificationStatus(selectedUser.id, 'Information Required', info);
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Request Info
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
   
   return (
@@ -311,6 +565,9 @@ const AdminDashboard = ({
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Token
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -335,6 +592,9 @@ const AdminDashboard = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {verification.nombre}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {verification.telefono || 'Not provided'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
                       {verification.token}
@@ -374,51 +634,50 @@ const AdminDashboard = ({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {verification.estadoRevision === 'Pending Review' && (
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => {
-                              const confirmApprove = window.confirm('Approve this verification?');
-                              if (confirmApprove) {
-                                updateVerificationStatus(verification.id, 'Approved');
-                                alert('User will be notified of approval via email');
-                              }
-                            }}
-                            className="text-green-600 hover:text-green-900"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => {
-                              const reason = prompt('Rejection reason or missing information:');
-                              if (reason) {
-                                updateVerificationStatus(verification.id, 'Rejected', reason);
-                                alert('User will be notified via email with the reason');
-                              }
-                            }}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={() => {
-                              const info = prompt('What additional information is needed?');
-                              if (info) {
-                                updateVerificationStatus(verification.id, 'Information Required', info);
-                                alert('User will be notified to provide additional information');
-                              }
-                            }}
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            Request Info
-                          </button>
-                        </div>
-                      )}
-                      {verification.estadoRevision !== 'Pending Review' && (
-                        <span className="text-gray-500 text-xs">
-                          Reviewed on {new Date(verification.fechaRevision).toLocaleDateString()}
-                        </span>
-                      )}
+                      <div className="flex space-x-2">
+                        {/* Botón para ver detalles */}
+                        <button
+                          onClick={() => openUserDetails(verification)}
+                          className="text-blue-600 hover:text-blue-900 flex items-center"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View Details
+                        </button>
+                        
+                        {verification.estadoRevision === 'Pending Review' && (
+                          <>
+                            <button
+                              onClick={() => {
+                                const confirmApprove = window.confirm('Approve this verification?');
+                                if (confirmApprove) {
+                                  updateVerificationStatus(verification.id, 'Approved');
+                                  alert('User will be notified of approval via email');
+                                }
+                              }}
+                              className="text-green-600 hover:text-green-900"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => {
+                                const reason = prompt('Rejection reason or missing information:');
+                                if (reason) {
+                                  updateVerificationStatus(verification.id, 'Rejected', reason);
+                                  alert('User will be notified via email with the reason');
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        )}
+                        {verification.estadoRevision !== 'Pending Review' && (
+                          <span className="text-gray-500 text-xs">
+                            Reviewed on {new Date(verification.fechaRevision).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -437,14 +696,8 @@ const AdminDashboard = ({
           </div>
         )}
         
-        {/* Debug info */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-4 p-4 bg-gray-100 rounded text-xs font-mono">
-            <p>Total in state: {verificationsList.length}</p>
-            <p>Showing: {filteredVerifications.length}</p>
-            <p>Auto-refresh: {autoRefresh ? 'ON' : 'OFF'}</p>
-          </div>
-        )}
+        {/* Modal de detalles del usuario */}
+        <UserDetailsModal />
       </div>
     </div>
   );
