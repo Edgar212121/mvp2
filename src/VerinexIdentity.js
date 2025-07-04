@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Upload, 
   Camera, 
@@ -73,6 +73,19 @@ const VerinexIdentity = () => {
   const documentInputRef = useRef(null);
   const documentBackInputRef = useRef(null);
   const selfieInputRef = useRef(null);
+
+  // CORRECCIÓN: Funciones de onChange con useCallback para evitar re-renders
+  const handleUserNameChange = useCallback((e) => {
+    setFormData(prev => ({ ...prev, userName: e.target.value }));
+  }, []);
+
+  const handlePhoneNumberChange = useCallback((e) => {
+    setFormData(prev => ({ ...prev, phoneNumber: e.target.value }));
+  }, []);
+
+  const handleAdminPasswordChange = useCallback((e) => {
+    setAdminPassword(e.target.value);
+  }, []);
 
   // Initialize verification system
   useEffect(() => {
@@ -680,7 +693,7 @@ const VerinexIdentity = () => {
 
   // Admin Login Component
   const AdminLogin = () => {
-    const handleLogin = (e) => {
+    const handleLogin = useCallback((e) => {
       if (e) e.preventDefault();
       
       if (adminPassword === 'admin123') {
@@ -691,7 +704,7 @@ const VerinexIdentity = () => {
         alert('Incorrect password. Use: admin123');
         setAdminPassword('');
       }
-    };
+    }, [adminPassword]);
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 flex items-center justify-center">
@@ -707,10 +720,11 @@ const VerinexIdentity = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Administrator Password
               </label>
+              {/* CORRECCIÓN: Removida key prop estática */}
               <input
                 type="password"
                 value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
+                onChange={handleAdminPasswordChange}
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     handleLogin();
@@ -1282,7 +1296,7 @@ const VerinexIdentity = () => {
     </div>
   );
 
-  // Upload Page
+  // Upload Page - CORRECCIÓN PRINCIPAL AQUÍ
   const UploadPage = () => (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow border-b">
@@ -1340,10 +1354,11 @@ const VerinexIdentity = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Full Name <span className="text-red-500">*</span>
               </label>
+              {/* CORRECCIÓN: Removida key prop estática */}
               <input
                 type="text"
                 value={formData.userName}
-                onChange={(e) => setFormData(prev => ({ ...prev, userName: e.target.value }))}
+                onChange={handleUserNameChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your full name as it appears on your document"
               />
@@ -1353,10 +1368,11 @@ const VerinexIdentity = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Phone Number <span className="text-red-500">*</span>
               </label>
+              {/* CORRECCIÓN: Removida key prop estática */}
               <input
                 type="tel"
                 value={formData.phoneNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                onChange={handlePhoneNumberChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Include country code (e.g., +34 612345678)"
               />
