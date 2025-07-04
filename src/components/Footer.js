@@ -25,14 +25,15 @@ const Footer = () => {
                 <span className="text-2xl font-bold">VERINEX IDENTITY</span>
               </div>
               <p className="text-gray-300 mb-4">
-                Privacy-first identity verification platform. We verify who you are without compromising your privacy. 
-                Based in Singapore, operating globally with the highest security standards.
+                Privacy-first identity verification platform. We verify your identity without compromising your privacy.
+                 Based in Singapore, operating globally with the highest security standards.
               </p>
               <p className="text-sm text-gray-400">
-                © 2025 Verinex Identity Pte. Ltd. All rights reserved.
+                © 2025 Verinex Identity Inc.
+
               </p>
               <p className="text-sm text-gray-400 mt-2">
-                Verinex Identity Pte. Ltd. • Singapore
+               Singapore
               </p>
             </div>
             
@@ -94,9 +95,9 @@ const Footer = () => {
           
           <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm">
-              <p>🔒 Your privacy is our priority • Based in Singapore • PDPA Compliant</p>
+              <p>We operate privately & securely — based in Singapore</p>
               <p className="mt-2">
-                No CRS/FATCA participation • Data Protection Officer: <a href="mailto:dpo@verinex.sg" className="text-blue-400 hover:underline">dpo@verinex.sg</a>
+                Data Protection Officer: dpo@verinex.id  <a href="mailto:dpo@verinex.sg" className="text-blue-400 hover:underline">dpo@verinex.sg</a>
               </p>
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">

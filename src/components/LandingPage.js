@@ -36,7 +36,7 @@ const LandingPage = ({
         {/* Hero Section */}
         <div className="text-center mb-24">
           <h1 className="text-6xl font-bold text-white mb-6">
-            Your identity, your control.
+            Your identity, your rules.
           </h1>
           <p className="text-2xl text-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed">
             We verify who you are without sharing it with anyone.
@@ -44,7 +44,7 @@ const LandingPage = ({
           
           {/* CTA Text */}
           <p className="text-lg text-blue-200 mb-8 max-w-2xl mx-auto font-medium">
-            <strong className="text-white">We built Verinex for people who value privacy but still want access.</strong><br/>
+            <strong className="text-white">Verinex is designed for individuals who value privacy.</strong><br/>
             This is compliance — without compromise.
           </p>
           
@@ -76,9 +76,9 @@ const LandingPage = ({
                 <div className="bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10">
                   <h3 className="text-lg font-semibold text-white mb-3">Who is Verinex Identity?</h3>
                   <p className="text-blue-100 leading-relaxed">
-                    We're a privacy-focused identity verification company born from the belief that compliance shouldn't mean surveillance. 
-                    Founded by privacy advocates and security experts, we built the KYC solution we wished existed: one that verifies 
-                    identities for regulatory compliance while treating personal data as sacred. No tracking, no selling, no compromises.
+It is a privacy-first identity verification company built on the principle that compliance must not require surveillance or data sharing.
+Founded by privacy and security subject matter experts, we deliver a unique solution that is 100% compliant, ensuring the data remains safe and unshared.
+Our business is to keep your data safe without exception.
                   </p>
                 </div>
               </div>
@@ -103,9 +103,9 @@ const LandingPage = ({
               <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
                 <Globe className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Jurisdiction Matters</h3>
+              <h3 className="text-xl font-bold text-white mb-3">Zero Knowledge</h3>
               <p className="text-base text-blue-100 leading-relaxed">
-                We operate from Singapore. Your data stays where governments can't touch it.
+                We don’t need to share your data to comply with the current regulation.
               </p>
             </div>
             
@@ -115,7 +115,7 @@ const LandingPage = ({
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Fully Independent</h3>
               <p className="text-base text-blue-100 leading-relaxed">
-                We're not a bank. We don't store your funds. We don't sell or leak your data.
+                We’re not a bank or an institution forced to share your data under any regulation.
               </p>
             </div>
           </div>
@@ -125,10 +125,14 @@ const LandingPage = ({
             <div className="flex items-center justify-center space-x-4">
               <AlertCircle className="h-8 w-8 text-amber-300" />
               <div className="text-center">
-                <p className="text-xl font-bold text-white mb-1">No CRS/FATCA Participation</p>
+                <p className="text-xl font-bold text-white mb-1">No third-party communication</p>
                 <p className="text-amber-100">
                   Verinex Identity does not participate in automatic information exchange agreements. 
                   Your verification data is never shared with tax authorities or foreign governments.
+                </p>
+                 <p className="text-xl font-bold text-white mb-1">Fully compliant and ethical</p>
+                <p className="text-amber-100">
+                  Verinex identity checks users against AML, CFT, and others to avoid situations such as terrorism, weapon trade, and white slavery.
                 </p>
               </div>
             </div>
@@ -142,21 +146,21 @@ const LandingPage = ({
             <div className="bg-white/5 backdrop-blur-lg rounded-xl p-8 border border-white/10">
               <h3 className="text-xl font-bold text-white mb-3">Do you share my data with anyone?</h3>
               <p className="text-lg text-blue-100">
-                No. Not with your country, not with financial institutions, not even with our partners.
+                No. No one will have access to your data
               </p>
             </div>
             
             <div className="bg-white/5 backdrop-blur-lg rounded-xl p-8 border border-white/10">
               <h3 className="text-xl font-bold text-white mb-3">Why do I need to verify?</h3>
               <p className="text-lg text-blue-100">
-                Because it unlocks access to exclusive financial tools — but we do it the Verinex way: fast, private, and irreversible after deletion.
+                Because it grants access to exclusive financial tools, but we do it the Verinex way: fast, private, and irreversible once deleted.
               </p>
             </div>
             
             <div className="bg-white/5 backdrop-blur-lg rounded-xl p-8 border border-white/10">
               <h3 className="text-xl font-bold text-white mb-3">How long do you keep my documents?</h3>
               <p className="text-lg text-blue-100">
-                Max 30 days. Then they're gone. Forever.
+                As long as your card is active, they’re still here. Once it’s gone, they’re gone forever.
               </p>
             </div>
           </div>
@@ -189,7 +193,6 @@ const LandingPage = ({
                 <li>• Management and reporting dashboard</li>
                 <li>• Automatic regulatory compliance</li>
                 <li>• 24/7 specialized support</li>
-                <li>• Audits and certifications</li>
               </ul>
             </div>
           </div>
